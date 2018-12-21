@@ -8,9 +8,9 @@ steps:
   args: 
   - '-c'
   - |
-    mvn test || echo 'maven failure'
+    mvn surefire-report:report || echo 'maven failure'
 
-- id: Save Maven Surefire Logs 
+- id: Save Maven Surefire Report to GCS 
   name: 'gcr.io/cloud-builders/gsutil'
-  args: ['cp','-r','./target/surefire-reports','gs://gcb-alwayspass/surefire-reports/$BUILD_ID/']
+  args: ['cp','-r','./target/site/surefire-report.html','gs://gcb-alwayspass/surefire-html-reports/$BUILD_ID/report.html']
    
