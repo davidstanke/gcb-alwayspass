@@ -1,0 +1,16 @@
+steps:
+
+# GCB will always treat this step as a pass.
+# This means the build will always continue to the next step.
+- id: Build and Test with Maven 
+  name: 'gcr.io/cloud-builders/mvn'
+  entrypoint: 'bash'
+  args: 
+  - '-c'
+  - |
+    mvn test || echo 'maven failure'
+
+- id: Save Maven Surefire Logs 
+  name: 'gcr.io/cloud-builders/gsutil'
+  args: ['cp','-r','./target/surefire-reports','gs://gcb-alwayspass/surefire-reports/$BUILD_ID/']
+   
