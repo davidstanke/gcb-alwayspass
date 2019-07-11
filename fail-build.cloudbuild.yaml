@@ -1,0 +1,25 @@
+steps:
+
+# GCB will always treat this step as a pass.
+# This means the build will always continue to the next step.
+- id: Build and Test with Maven 
+  name: 'gcr.io/cloud-builders/mvn'
+  entrypoint: 'bash'
+  args: 
+  - '-c'
+  - |
+    mvn surefire-report:report || echo "fail" > /workspace/build-status.txt
+
+- id: Save Maven Surefire Report to GCS 
+  name: 'gcr.io/cloud-builders/gsutil'
+  args: ['cp','-r','./target/site/surefire-report.html','gs://gcb-alwayspass/surefire-html-reports/$BUILD_ID/report.html']
+   
+- id: Bubble Maven result
+  name: 'gcr.io/cloud-builders/mvn'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      if [[ $(< /workspace/build-status.txt) == "fail" ]]; then
+        exit 1
+      fi
