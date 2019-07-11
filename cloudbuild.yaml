@@ -8,7 +8,7 @@ steps:
   args: 
   - '-c'
   - |
-    mvn surefire-report:report || echo 'maven failure'
+    mvn test || echo 'maven failure'
 
 - id: Save Maven Surefire Report to GCS 
   name: 'gcr.io/cloud-builders/gsutil'
